@@ -4,12 +4,24 @@ using UnityEngine;
 
 public class UpdateMesh : MonoBehaviour
 {
-    public GameObject targetObject;
+    public MyCube targetCube;
+    public Mesh mesh;
+    List<Material> materials = new List<Material>();
 
     // Update is called once per frame
     void Update()
     {
-        targetObject.GetComponent<MeshFilter>().sharedMesh = GetComponent<MeshFilter>().sharedMesh;
-        targetObject.GetComponent<MeshRenderer>().materials = GetComponent<MeshRenderer>().materials;
+        // update mesh
+        if (mesh != null)
+            Destroy(mesh);
+        mesh = GetComponent<MeshFilter>().sharedMesh = Instantiate(targetCube.mesh);
+
+        // update materials
+        foreach (var material in materials)
+            Destroy(material);
+        materials.Clear();
+        foreach (var material in targetCube.GetComponent<MeshRenderer>().materials)
+            materials.Add(Instantiate(material));
+        GetComponent<MeshRenderer>().materials = materials.ToArray();
     }
 }
