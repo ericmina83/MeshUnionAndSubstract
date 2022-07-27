@@ -6,8 +6,8 @@ public class BoxController : MonoBehaviour
 {
     public MyCube selectedCube;
     public LayerMask layerMask;
-
     public static BoxController instance;
+    Vector3 prevPos;
 
     void Awake()
     {
@@ -26,14 +26,19 @@ public class BoxController : MonoBehaviour
             {
                 selectedCube = hit.transform.gameObject.GetComponent<MyCube>();
                 selectedCube.selected = true;
+                prevPos = GetXZPlanePos(ray, selectedCube.transform.position.y);
             }
             else
                 selectedCube = null;
         }
         else if (Input.GetMouseButton(0))
         {
+            var newPos = GetXZPlanePos(ray, selectedCube.transform.position.y);
+
             if (selectedCube != null)
-                selectedCube.transform.position = GetXZPlanePos(ray, selectedCube.transform.position.y);
+                selectedCube.transform.position += newPos - prevPos;
+
+            prevPos = newPos;
         }
         else if (Input.GetMouseButtonUp(0))
         {
